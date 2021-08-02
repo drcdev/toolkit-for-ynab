@@ -1,7 +1,6 @@
 import { ObserveListener, RouteChangeListener } from 'toolkit/extension/listeners';
 import { logToolkitError } from 'toolkit/core/common/errors/with-toolkit-error';
 
-
 export class Feature {
   featureName = this.constructor.name as FeatureName;
 
@@ -22,6 +21,10 @@ export class Feature {
 
   invoke() {
     throw Error(`Feature: ${this.featureName} does not implement required invoke() method.`);
+  }
+
+  destroy() {
+    /* stubbed, most features don't support destroy yet */
   }
 
   injectCSS() {
