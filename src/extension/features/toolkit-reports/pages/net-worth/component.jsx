@@ -7,6 +7,7 @@ import { l10n } from 'toolkit/extension/utils/toolkit';
 import { FiltersPropType } from 'toolkit-reports/common/components/report-context/component';
 import { Legend } from './components/legend';
 import { LabeledCheckbox } from 'toolkit-reports/common/components/labeled-checkbox';
+import { LabeledRadio } from 'toolkit-reports/common/components/labeled-radio';
 import { getToolkitStorageKey, setToolkitStorageKey } from 'toolkit/extension/utils/toolkit';
 
 const STORAGE_KEYS = {
@@ -21,6 +22,7 @@ export class NetWorthComponent extends React.Component {
 
   state = {
     inverseDebt: getToolkitStorageKey(STORAGE_KEYS.inverseDebt, false),
+    chartPeriod: 'Monthly',
   };
 
   componentDidMount() {
@@ -40,12 +42,36 @@ export class NetWorthComponent extends React.Component {
     return (
       <div className="tk-flex-grow tk-flex tk-flex-column">
         <div className="tk-flex tk-pd-05 tk-border-b">
-          <div>
+          <div className="tk-pd-l-05 tk-pd-r-1 tk-border-r">
             <LabeledCheckbox
               id="tk-net-worth-inverse-debt-selector"
               checked={this.state.inverseDebt}
               label="Flip Debt"
               onChange={this.toggleDebtDirection}
+            />
+          </div>
+          <div className="tk-pd-l-1">
+            <LabeledRadio
+              id="tk-net-worth-period-yearly"
+              checked={this.state.chartPeriod == 'Yearly'}
+              label="Yearly"
+              onChange={() => this.setChartType('Yearly')}
+            />
+          </div>
+          <div className="tk-pd-l-05">
+            <LabeledRadio
+              id="tk-net-worth-period-quarterly"
+              checked={this.state.chartPeriod == 'Quarterly'}
+              label="Quarterly"
+              onChange={() => this.setChartType('Quarterly')}
+            />
+          </div>
+          <div className="tk-pd-l-05">
+            <LabeledRadio
+              id="tk-net-worth-period-monthly"
+              checked={this.state.chartPeriod == 'Monthly'}
+              label="Monthly"
+              onChange={() => this.setChartType('Monthly')}
             />
           </div>
         </div>
@@ -76,9 +102,35 @@ export class NetWorthComponent extends React.Component {
     this._calculateData();
   };
 
+  setChartType = (chartType) => {
+    if (chartType != this.state.chartPeriod) {
+      this.setState({ chartType: chartType });
+      this._calculateData();
+    }
+  };
+
   _renderReport = () => {
     const _this = this;
     const { labels, debts, assets, debtRatios, netWorths } = this.state.reportData;
+
+    if (this.state.chartPeriod == 'Yearly' || this.state.chartPeriod == 'Quarterly') {
+      for (let i = labels.length - 1; i >= 0; i--) {
+        if (
+          (this.state.chartPeriod == 'Yearly' && labels[i].indexOf('December') == -1) ||
+          (this.state.chartPeriod == 'Quarterly' &&
+            labels[i].indexOf('December') == -1 &&
+            labels[i].indexOf('September') == -1 &&
+            labels[i].indexOf('June') == -1 &&
+            labels[i].indexOf('March') == -1)
+        ) {
+          labels.splice(i, 1);
+          debts.splice(i, 1);
+          assets.splice(i, 1);
+          debtRatios.splice(i, 1);
+          netWorths.splice(i, 1);
+        }
+      }
+    }
 
     const pointHover = {
       events: {
