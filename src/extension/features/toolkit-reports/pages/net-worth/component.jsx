@@ -55,7 +55,7 @@ export class NetWorthComponent extends React.Component {
               id="tk-net-worth-period-yearly"
               checked={this.state.chartPeriod == 'Yearly'}
               label="Yearly"
-              onChange={() => this.setChartType('Yearly')}
+              onChange={() => this.setChartPeriod('Yearly')}
             />
           </div>
           <div className="tk-pd-l-05">
@@ -63,7 +63,7 @@ export class NetWorthComponent extends React.Component {
               id="tk-net-worth-period-quarterly"
               checked={this.state.chartPeriod == 'Quarterly'}
               label="Quarterly"
-              onChange={() => this.setChartType('Quarterly')}
+              onChange={() => this.setChartPeriod('Quarterly')}
             />
           </div>
           <div className="tk-pd-l-05">
@@ -71,7 +71,7 @@ export class NetWorthComponent extends React.Component {
               id="tk-net-worth-period-monthly"
               checked={this.state.chartPeriod == 'Monthly'}
               label="Monthly"
-              onChange={() => this.setChartType('Monthly')}
+              onChange={() => this.setChartPeriod('Monthly')}
             />
           </div>
         </div>
@@ -102,9 +102,9 @@ export class NetWorthComponent extends React.Component {
     this._calculateData();
   };
 
-  setChartType = (chartType) => {
-    if (chartType != this.state.chartPeriod) {
-      this.setState({ chartType: chartType });
+  setChartPeriod = (chartPeriod) => {
+    if (chartPeriod != this.state.chartPeriod) {
+      this.setState({ chartPeriod: chartPeriod });
       this._calculateData();
     }
   };
